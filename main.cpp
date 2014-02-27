@@ -2,16 +2,14 @@
 
 using id = int;
 
-enum class priority
-{
+enum class priority {
 	real_time,
 	user_1,
 	user_2,
 	user_3
 };
 
-struct process
-{
+struct process {
 	id m_id;
 	priority m_priority;
 };
@@ -31,19 +29,21 @@ struct queues {
 
 //queues schedule(queues) { }
 
-queues add_process(queues q, process p)
-{
+queues add_process(queues q, process p) {
 }
 
-int main()
-{
+int main() {
 	auto processes = load_file();
 
 	for (;;) {
-	if (is_time_for_new_process(processes)) { }
-		if (not new_processes.empty()) { add() }
+		if (is_time_for_new_process(processes)) {
 
-	// job principale
+		}
+		if (not new_processes.empty()) {
+			add()
+		}
+
+		// job principale
 
 	}
 }
