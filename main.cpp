@@ -1,13 +1,14 @@
-#include <vector>
 #include <fstream>
+#include <iostream>
+#include <cstdio>
+#include <cstring>
 #include <string>
 #include <utility>
-#include <iostream>
-#include <string.h>
-#include <stdio.h>
+#include <vector>
+#include <algorithm>
+
 
 using id = int;
-using namespace std;
 
 enum class priority {
 	real_time,
@@ -30,63 +31,51 @@ struct process {
 using process_queue = std::vector<process>;
 
 //queues schedule(queues) { }
+std::vector<std::string> extract_infos(std::string line, char delimiter) {
+	
+	std::vector<std::string> proc_infos;
+	auto first = begin(line);
+	auto last = std::find(first, std::end(line), delimiter);
 
-
-vector<process> load_file(std::string file_name) {
-	//le format des données de chaque ligne est:
-	/*
-	<temps d’arrivée>, <priorité>, <temps d’exécution>, <nombre d’imprimantes>, 
-	<nombre de scanneurs>, <nombre de modems>, <nombre de CD> 
-	*/
-	string cur_line;
-	vector<process> proc_list;
-	ifstream file(file_name, ifstream::in);
-	while(getline(file, cur_line)) {
-		//cout << "///" << endl;
-		cout << cur_line << endl;
-		string p_info;
-		int info_no=1;
-		while(getline(cur_line, p_info, ', ')) {
-			process p;
-			switch (info_no) {
-				case 1:
-					p.arrival = stoi(p_info);
-					break;
-				case 2:
-					p.m_priority = stoi(p_info);
-					break;
-				case 3:
-					p.exec_time = stoi(p_info);
-					break;
-				case 4:
-					p.nb_printer = stoi(p_info);
-					break;
-				case 5:
-					p.nb_scanner = stoi(p_info);
-					break;
-				case 6:
-					p.nb_modem = stoi(p_info);
-					break;
-				case 7:
-					p.nb_cd = stoi(p_info);
-					break;
-				default:
-					cout << "to much arguments in the process list file" << endl;
-			}
-			proc_list.push_back(p);
-			info_no++;
-		}
+	while (last != std::end(line)) {
+		proc_infos.emplace_back(first, last);
+		first = std::next(last);
+		last = std::find(first, std::end(line), delimiter);
 	}
+	
+	proc_infos.emplace_back(first, last);
+
+	return proc_infos;
+}
+
+std::vector<process> load_file(std::ifstream &file) {
+	//le format des données de chaque ligne est:
+	//<temps d’arrivée>, <priorité>, <temps d’exécution>, <nombre d’imprimantes>, 
+	//<nombre de scanneurs>, <nombre de modems>, <nombre de CD> 
+	std::string cur_line;
+	std::vector<process> proc_list;
+	char delimiter = ',';
+	while (getline(file, cur_line)) {
+		//cout << "///" << endl;
+		std::cout << cur_line << std::endl;
+		std::string p_info;
+    		cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), ' '), cur_line.end());
+
+		auto proc_infos = extract_infos(cur_line, delimiter); 
+	}
+
 	
 	return proc_list;
 }
 
+
 int main() {
-	vector<process> proc_list = load_file("process.txt");
+	std::ifstream file{"process.txt"};
+	auto proc_list = load_file(file);
 }
 
+
 void main_prog() {
-/*
 	auto processes = load_file("process.txt");
 
 	for (;;) {
@@ -100,5 +89,5 @@ void main_prog() {
 		// job principale
 
 	}
-*/
 }
+
