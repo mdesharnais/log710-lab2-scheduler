@@ -1,4 +1,6 @@
 #include "types.hpp"
+#include "load_file.hpp"
+
 
 bool check_if_enough_resources (process p) {
 	//
@@ -53,8 +55,11 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, state) {
 }
 
 int main() {
+	std::ifstream file{"process.txt"};
+	auto proc_list = load_file(file);
+
 	auto state = scheduler_state{nullptr, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}};
-	load_file();
 
 	run_main_loop(0, state);
 }
+

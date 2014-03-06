@@ -3,6 +3,13 @@
 
 #include <vector>
 #include <chrono>
+#include <fstream>
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <utility>
+#include <algorithm>
 
 using id = int;
 
@@ -32,8 +39,16 @@ std::map<resource, int> available_resources = {
 struct process {
 	id id;
 	priority priority;
+};
+
+struct process {
+	id m_id;
+	int arrival;
+	priority m_priority;
+	int exec_time;
 	std::map<resource, int> resources;
 };
+
 
 using process_queue = std::deque<process>;
 
