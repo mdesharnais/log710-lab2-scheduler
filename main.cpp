@@ -1,49 +1,60 @@
-#include <vector>
+#include "types.hpp"
 
-using id = int;
+bool check_if_enough_resources (process p) {
+	//
+}
 
-enum class priority {
-	real_time,
-	user_1,
-	user_2,
-	user_3
-};
+void run_main_loop(std::chrono::steady_clock::time_point last_run, state) {
+	//Empty list of new processes into usr_queue or real_time_queue
+	for (auto p : new_proc_queue) {
+		if p.priority == real_time{
+			queue_real_time.push_back(p);
+		}else{
+			queue.queue_usr_waiting.push_back(p);
+		}
+	}
 
-struct process {
-	id m_id;
-	priority m_priority;
-};
+	//Stop currently running process and move it to a higher priority queue, if possible
+	if (current_process != nullptr) {
+		stop(current_process);
+		current_process.priority = std::max(current_process.priority - 1, 1);
+		queues_usr[current_process.priority].push_back(current_process);
+	}
 
-using process_queue = std::vector<process>;
-using queues = std::vector<process_queue>;
+	//Run any real time process until completion
+	while (not real_time_queue.empty()) {
+		current_process = real_time_queue.front();
+		real_time_queue.pop_front();
+		start(current_process.id);
+		waitpid(current_process.id, nullptr, 0);
+	}
 
-struct queues {
-	current_process
-	queue_new_process
-	queue_usr_waiting
-	queue_real_time
-	queue_usr_1
-	queue_usr_2
-	queue_usr_3
-};
+	//Add all processes that can be added to an usr queue
+	for (auto p : queue_usr_waiting) {
+		if (check_if_enough_resources(p)) {
+			queues_usr[p.priority].push_back(p);
+		}
+	}
 
-//queues schedule(queues) { }
+	//Run highest priority process
+	bool cont = true;
+	for (int i = 0; i < queues_usr.size() and cont; i++) {
+		auto q = queues_usr[i];
+		if (not q.empty()) {
+			current_process = q.front();
+			q.pop_front();
+			start(current_process);
+			cont = false;
+		}
+	}
 
-queues add_process(queues q, process p) {
+	std::this_thread::sleep_until(last_run + TICK);
+	run_main_loop(system::chrono::steady_clock::now());
 }
 
 int main() {
-	auto processes = load_file();
+	auto state = scheduler_state{nullptr, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}};
+	load_file();
 
-	for (;;) {
-		if (is_time_for_new_process(processes)) {
-
-		}
-		if (not new_processes.empty()) {
-			add()
-		}
-
-		// job principale
-
-	}
+	run_main_loop(0, state);
 }
