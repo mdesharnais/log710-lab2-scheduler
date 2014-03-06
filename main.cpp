@@ -2,11 +2,12 @@
 #include "load_file.hpp"
 
 
-bool check_if_enough_resources (process p) {
-	//
+bool check_if_enough_resources (process /* p */) {
+	return false;
 }
 
-void run_main_loop(std::chrono::steady_clock::time_point last_run, state) {
+/*
+void run_main_loop(std::chrono::steady_clock::time_point last_run, scheduler_state state) {
 	//Empty list of new processes into usr_queue or real_time_queue
 	for (auto p : new_proc_queue) {
 		if p.priority == real_time{
@@ -51,15 +52,15 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, state) {
 	}
 
 	std::this_thread::sleep_until(last_run + TICK);
-	run_main_loop(system::chrono::steady_clock::now());
+	run_main_loop(std::chrono::steady_clock::now(), state);
 }
+	*/
 
 int main() {
 	std::ifstream file{"process.txt"};
 	auto proc_list = load_file(file);
 
-	auto state = scheduler_state{nullptr, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}};
-
-	run_main_loop(0, state);
+	//auto state = scheduler_state{nullptr, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}};
+	//run_main_loop(0, state);
 }
 

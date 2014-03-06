@@ -1,15 +1,21 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
 
-#include <vector>
+#include <sys/types.h>
+#include <signal.h>
+
+#include <algorithm>
 #include <chrono>
-#include <fstream>
-#include <iostream>
 #include <cstdio>
 #include <cstring>
+#include <deque>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <memory>
 #include <string>
 #include <utility>
-#include <algorithm>
+#include <vector>
 
 using id = int;
 
@@ -22,23 +28,18 @@ enum class priority {
 	user_3
 };
 
-enum class resource {
+enum class ressource {
 	cd,
 	printer,
 	scanner,
 	modem
 };
 
-std::map<resource, int> available_resources = {
-	{resource::cd, 2},
-	{resource::printer, 2},
-	{resource::scanner, 1},
-	{resource::modem, 1}
-};
-
-struct process {
-	id id;
-	priority priority;
+std::map<ressource, int> available_ressources = {
+	{ressource::cd, 2},
+	{ressource::printer, 2},
+	{ressource::scanner, 1},
+	{ressource::modem, 1}
 };
 
 struct process {
@@ -46,7 +47,7 @@ struct process {
 	int arrival;
 	priority m_priority;
 	int exec_time;
-	std::map<resource, int> resources;
+	std::map<ressource, int> ressources;
 };
 
 
@@ -60,20 +61,20 @@ struct scheduler_state {
 	std::vector<process_queue> queues_usr;
 };
 
-void launch(process p) {
+void launch(process /* p */) {
 
 }
 
 void pause(process p) {
-	kill(p.id, SIGTSTP);
+	kill(p.m_id, SIGTSTP);
 }
 
 void start(process p) {
-	kill(p.id, SIGCONT);
+	kill(p.m_id, SIGCONT);
 }
 
 void end(process p) {
-	kill(p.id, SIGINT);
+	kill(p.m_id, SIGINT);
 }
 
 #endif

@@ -1,3 +1,3 @@
 all:
-	clang++ -o scheduler -std=c++11 -Wall -Wextra -Werror main.cpp
+	g++ -o scheduler -std=c++11 -Wall -Wextra -Werror main.cpp
 	./scheduler
