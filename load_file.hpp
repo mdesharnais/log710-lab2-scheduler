@@ -50,6 +50,8 @@ std::vector<process> load_file(std::ifstream &file) {
 		proc.ressources[ressource::scanner] = std::stoi(proc_infos[4]);
 		proc.ressources[ressource::modem] = std::stoi(proc_infos[5]);
 		proc.ressources[ressource::cd] = std::stoi(proc_infos[6]);
+		proc_list.push_back(proc);
+		pause(proc);
 	}
 
 
