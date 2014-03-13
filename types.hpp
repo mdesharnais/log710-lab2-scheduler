@@ -28,18 +28,18 @@ enum class priority {
 	user_3
 };
 
-enum class ressource {
+enum class resource {
 	cd,
 	printer,
 	scanner,
 	modem
 };
 
-std::map<ressource, int> available_ressources = {
-	{ressource::cd, 2},
-	{ressource::printer, 2},
-	{ressource::scanner, 1},
-	{ressource::modem, 1}
+std::map<resource, int> available_resources = {
+	{resource::cd, 2},
+	{resource::printer, 2},
+	{resource::scanner, 1},
+	{resource::modem, 1}
 };
 
 struct process {
@@ -47,7 +47,7 @@ struct process {
 	int arrival;
 	priority m_priority;
 	int exec_time;
-	std::map<ressource, int> ressources;
+	std::map<resource, int> resources;
 };
 
 
