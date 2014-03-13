@@ -68,7 +68,8 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, scheduler_sta
 int main() {
 	std::ifstream file{"process.txt"};
 	auto proc_list = load_file(file);
-
+	//proc_list[0] = launch(proc_list[0]);
+	//std::cout << proc_list[0].m_id << std::endl;
 	//auto state = scheduler_state{nullptr, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}, process_queue{}};
 	//run_main_loop(0, state);
 }

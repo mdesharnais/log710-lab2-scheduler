@@ -14,6 +14,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <unistd.h>
 #include <utility>
 #include <vector>
 
@@ -61,8 +62,9 @@ struct scheduler_state {
 	std::vector<process_queue> queues_usr;
 };
 
-void launch(process /* p */) {
-
+process launch(process p) {
+	p.m_id = execl("./log710h14process", "log710h14process", nullptr);
+	return p;
 }
 
 void pause(process p) {
@@ -76,5 +78,4 @@ void start(process p) {
 void end(process p) {
 	kill(p.m_id, SIGINT);
 }
-
 #endif
