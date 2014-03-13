@@ -2,8 +2,17 @@
 #include "load_file.hpp"
 
 
-bool check_if_enough_resources (process /* p */) {
-	return false;
+bool check_if_enough_resources (process p) {
+	auto res = p.resources;
+	auto av_res = available_resources;
+
+	if (res[resource::printer] <= av_res[resource::printer]
+	&& res[resource::modem] <= av_res[resource::modem]
+	&& res[resource::cd] <= av_res[resource::cd]
+	&& res[resource::scanner] <= av_res[resource::scanner])
+		return true;
+	else
+		return false;
 }
 
 /*

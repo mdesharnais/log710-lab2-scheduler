@@ -46,10 +46,10 @@ std::vector<process> load_file(std::ifstream &file) {
 		proc.arrival = stoi(proc_infos[0]);
 		proc.m_priority = parse_priority(proc_infos[1]);
 		proc.exec_time = stoi(proc_infos[2]);
-		proc.ressources[ressource::printer] = std::stoi(proc_infos[3]);
-		proc.ressources[ressource::scanner] = std::stoi(proc_infos[4]);
-		proc.ressources[ressource::modem] = std::stoi(proc_infos[5]);
-		proc.ressources[ressource::cd] = std::stoi(proc_infos[6]);
+		proc.resources[resource::printer] = std::stoi(proc_infos[3]);
+		proc.resources[resource::scanner] = std::stoi(proc_infos[4]);
+		proc.resources[resource::modem] = std::stoi(proc_infos[5]);
+		proc.resources[resource::cd] = std::stoi(proc_infos[6]);
 		proc_list.push_back(proc);
 		pause(proc);
 	}
