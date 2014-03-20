@@ -2,6 +2,7 @@
 #define TYPES_HPP
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 
 #include <algorithm>
@@ -14,6 +15,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <thread>
 #include <unistd.h>
 #include <utility>
 #include <vector>
@@ -21,13 +23,26 @@
 using id = int;
 
 auto TICK = std::chrono::seconds(1);
+auto microTICK = std::chrono::milliseconds(1);
 
-enum class priority {
-	real_time,
+enum priority {
 	user_1,
 	user_2,
-	user_3
+	user_3,
+	real_time
 };
+
+priority decrease_priority (priority p) {
+	if (p == priority::user_3) {
+		return priority::user_2;
+	}else if (p == priority::user_2) {
+		return priority::user_1;
+	}else if (p == priority::user_1) {
+		return priority::user_1;
+	}else{
+		return priority::real_time;
+	}
+}
 
 enum class resource {
 	cd,
@@ -51,6 +66,11 @@ struct process {
 	std::map<resource, int> resources;
 };
 
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 
 using process_queue = std::deque<process>;
 
