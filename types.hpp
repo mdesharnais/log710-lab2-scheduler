@@ -25,12 +25,14 @@ using id = int;
 auto TICK = std::chrono::seconds(1);
 auto microTICK = std::chrono::milliseconds(1);
 
-enum priority {
+enum class priority {
 	user_1,
 	user_2,
 	user_3,
 	real_time
 };
+
+
 
 priority decrease_priority (priority p) {
 	if (p == priority::user_3) {
@@ -68,6 +70,11 @@ struct process {
 	std::map<resource, int> resources;
 };
 
+std::ostream& operator<<(std::ostream& out, process /* p */) {
+	out << "*";
+	return out;
+}
+
 template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
 {
@@ -82,7 +89,7 @@ struct scheduler_state {
 	process_queue queue_new_process;
 	process_queue queue_usr_waiting;
 	process_queue queue_real_time;
-	std::vector<process_queue> queues_usr;
+	std::map<priority, process_queue> queues_usr;
 };
 
 process launch(process p) {
@@ -107,10 +114,17 @@ process launch(process p) {
 	}
 }
 
-
+bool is_process_finished(process p) {
+	int status;
+	int ret = waitpid(p.m_id, &status, WNOHANG);
+	if (ret == -1 || (WEXITSTATUS(status) == 0 && ret != 0)) {
+		return true;
+	}else{
+		return false;
+	}
+}
 
 process pause(process p) {
-	std::cout<<"Sending SIGTSP to "<<p.m_id<<std::endl;
 	kill(p.m_id, SIGTSTP);
 	return p;
 }
