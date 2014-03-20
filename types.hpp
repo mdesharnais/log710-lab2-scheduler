@@ -83,9 +83,24 @@ struct scheduler_state {
 };
 
 process launch(process p) {
-	p.m_id = execl("./log710h14process", "log710h14process", nullptr);
-	return p;
+	auto child_pid = fork();
+
+	switch (child_pid) {
+		case -1: // Error
+			std::cerr << "Error on fork(): " << strerror(errno) << "\n";
+		case 0: //child process
+		{
+			execl("./log710h14process", "log710h14process", nullptr);
+		}
+		default: //Parent process
+		{
+			p.m_id = child_pid;
+			return p;
+		}
+	}
 }
+
+
 
 void pause(process p) {
 	kill(p.m_id, SIGTSTP);
