@@ -39,8 +39,10 @@ priority decrease_priority (priority p) {
 		return priority::user_1;
 	}else if (p == priority::user_1) {
 		return priority::user_1;
-	}else{
+	}else if (p == priority::real_time) {
 		return priority::real_time;
+	}else{
+		return p;
 	}
 }
 
@@ -76,6 +78,7 @@ using process_queue = std::deque<process>;
 
 struct scheduler_state {
 	std::unique_ptr<process> current_process;
+	process_queue proc_list;
 	process_queue queue_new_process;
 	process_queue queue_usr_waiting;
 	process_queue queue_real_time;
@@ -88,9 +91,13 @@ process launch(process p) {
 	switch (child_pid) {
 		case -1: // Error
 			std::cerr << "Error on fork(): " << strerror(errno) << "\n";
+			throw "OMG!";
 		case 0: //child process
 		{
-			execl("./log710h14process", "log710h14process", nullptr);
+			auto ret = execl("./log710h14process", "log710h14process", std::to_string(p.exec_time).c_str(), nullptr);
+			if (ret == -1) {
+				throw "OMG!!!!";
+			}
 		}
 		default: //Parent process
 		{
@@ -102,15 +109,23 @@ process launch(process p) {
 
 
 
-void pause(process p) {
+process pause(process p) {
+	std::cout<<"Sending SIGTSP to "<<p.m_id<<std::endl;
 	kill(p.m_id, SIGTSTP);
+	return p;
 }
 
-void start(process p) {
-	kill(p.m_id, SIGCONT);
+process start(process p) {
+	if (p.m_id == 0) {
+		return launch(p);
+	}else{
+		kill(p.m_id, SIGCONT);
+		return p;
+	}
 }
 
-void end(process p) {
+process end(process p) {
 	kill(p.m_id, SIGINT);
+	return p;
 }
 #endif

@@ -30,12 +30,12 @@ priority parse_priority(std::string s) {
 		throw "input error on parse_priority(string): unrecognized priority";
 }
 
-std::vector<process> load_file(std::ifstream &file) {
+process_queue load_file(std::ifstream &file) {
 	//le format des données de chaque ligne est:
 	//<temps d’arrivée>, <priorité>, <temps d’exécution>, <nombre d’imprimantes>, 
 	//<nombre de scanneurs>, <nombre de modems>, <nombre de CD> 
 	std::string cur_line;
-	std::vector<process> proc_list;
+	process_queue proc_list;
 	char delimiter = ',';
 	while (getline(file, cur_line)) {
 		//cout << "///" << endl;
@@ -50,8 +50,8 @@ std::vector<process> load_file(std::ifstream &file) {
 		proc.resources[resource::scanner] = std::stoi(proc_infos[4]);
 		proc.resources[resource::modem] = std::stoi(proc_infos[5]);
 		proc.resources[resource::cd] = std::stoi(proc_infos[6]);
+		proc.m_id = 0;
 		proc_list.push_back(proc);
-		pause(proc);
 	}
 
 
