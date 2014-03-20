@@ -32,16 +32,16 @@ priority parse_priority(std::string s) {
 
 process_queue load_file(std::ifstream &file) {
 	//le format des données de chaque ligne est:
-	//<temps d’arrivée>, <priorité>, <temps d’exécution>, <nombre d’imprimantes>, 
-	//<nombre de scanneurs>, <nombre de modems>, <nombre de CD> 
+	//<temps d’arrivée>, <priorité>, <temps d’exécution>, <nombre d’imprimantes>,
+	//<nombre de scanneurs>, <nombre de modems>, <nombre de CD>
 	std::string cur_line;
 	process_queue proc_list;
 	char delimiter = ',';
 	while (getline(file, cur_line)) {
 		//cout << "///" << endl;
 		std::string p_info;
-    		cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), ' '), cur_line.end());
-		auto proc_infos = extract_infos(cur_line, delimiter); 
+			cur_line.erase(std::remove(cur_line.begin(), cur_line.end(), ' '), cur_line.end());
+		auto proc_infos = extract_infos(cur_line, delimiter);
 		process proc;
 		proc.arrival = stoi(proc_infos[0]);
 		proc.m_priority = parse_priority(proc_infos[1]);

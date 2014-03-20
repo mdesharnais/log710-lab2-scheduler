@@ -7,15 +7,30 @@ bool debug = false;
 
 bool check_if_enough_resources (process p) {
 	auto res = p.resources;
-	auto av_res = available_resources;
 
-	if (res[resource::printer] <= av_res[resource::printer]
-	&& res[resource::modem] <= av_res[resource::modem]
-	&& res[resource::cd] <= av_res[resource::cd]
-	&& res[resource::scanner] <= av_res[resource::scanner])
+	if (p.resources[resource::printer] <= available_resources[resource::printer]
+		&& p.resources[resource::modem] <= available_resources[resource::modem]
+		&& p.resources[resource::cd] <= available_resources[resource::cd]
+		&& p.resources[resource::scanner] <= available_resources[resource::scanner]
+	) {
 		return true;
-	else
+	}else{
 		return false;
+	}
+}
+
+process substract_resources (process p) {
+	for (auto& pair : p.resources) {
+		available_resources[pair.first] -= pair.second;
+	}
+	return p;
+}
+
+process release_resources (process p) {
+	for (auto& pair : p.resources) {
+		available_resources[pair.first] += pair.second;
+	}
+	return p;
 }
 
 void run_main_loop(std::chrono::steady_clock::time_point last_run, int nb_tick, scheduler_state& state) {
@@ -46,6 +61,7 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, int nb_tick, 
 			std::cout << "]" << std::endl;
 		}
 	}
+
 	//Check if we can start a new process
 	auto it = std::begin(state.proc_list);
 	while (it != std::end(state.proc_list)) {
@@ -92,6 +108,7 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, int nb_tick, 
 		auto it = std::begin(state.queue_usr_waiting);
 		while (it != std::end(state.queue_usr_waiting)) {
 			if (check_if_enough_resources(*it)) {
+				substract_resources(*it);
 				state.queues_usr[it->m_priority].push_back(*it);
 				it = state.queue_usr_waiting.erase(it);
 			} else {
@@ -120,6 +137,7 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, int nb_tick, 
 			now = std::chrono::steady_clock::now();
 		}
 		if (is_process_finished(*state.current_process)) {
+			release_resources(*state.current_process);
 			state.current_process = nullptr;
 		}
 	}
@@ -149,8 +167,6 @@ void run_main_loop(std::chrono::steady_clock::time_point last_run, int nb_tick, 
 int main() {
 	std::ifstream file{"process.txt"};
 	auto proc_list = load_file(file);
-
-
 
 	auto state = scheduler_state{nullptr, proc_list, process_queue{}, process_queue{}, process_queue{}, {
 		{priority::user_1, process_queue{}},
